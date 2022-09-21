@@ -23,12 +23,12 @@
       <div class="right flex">
         <button @click="toggleEditInvoice" class="dark-purple">Edit</button>
         <button @click="deleteInvoice(currentInvoice.docId)" class="red">Delete</button>
-        <button v-if="currentInvoice.invoicePending" @click="updateStatusToPaid(currentInvoice.docId)" class="green">
+        <button @click="updateStatusToPaid(currentInvoice.docId)" v-if="currentInvoice.invoicePending" class="green">
           Mark as Paid
         </button>
         <button
             v-if="currentInvoice.invoiceDraft || currentInvoice.invoicePaid"
-            @click="updateStatusToPending"
+            @click="updateStatusToPending(currentInvoice.docId)"
             class="orange"
         >
           Mark as Pending
@@ -112,7 +112,9 @@ export default {
         ['SET_CURRENT_INVOICE','TOGGLE_EDIT_INVOICE','TOGGLE_INVOICE']
     ),
 
-    ...mapActions(['DELETE_INVOICE']),
+    ...mapActions(
+        ['DELETE_INVOICE', 'UPDATE_STATUS_TO_PENDING', 'UPDATE_STATUS_TO_PAID']
+    ),
 
     getCurrentInvoice() {
       this.SET_CURRENT_INVOICE(this.$route.params.invoiceId);
@@ -127,6 +129,14 @@ export default {
     async deleteInvoice(docId) {
       await this.DELETE_INVOICE(docId);
       this.$router.push({name: 'Home'});
+    },
+
+    updateStatusToPaid(docId) {
+      this.UPDATE_STATUS_TO_PAID(docId);
+    },
+
+    updateStatusToPending(docId) {
+      this.UPDATE_STATUS_TO_PENDING(docId);
     },
   },
   computed: {
